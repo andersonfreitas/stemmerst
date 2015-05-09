@@ -57,16 +57,37 @@ Object subclass: StemmerST [
   ]
 ]
 
-stemmer := StemmerST new.
-(stemmer stem: 'beautiful').
-(stemmer stem: 'doações').
-(stemmer stem: 'beauty').
-(stemmer stem: 'canibal').
-(stemmer stem: 'aninal').
-(stemmer stem: 'canibalization').
-(stemmer stem: 'beau').
-(stemmer stem: 'animadversion').
-(stemmer stem: 'sprinkled').
-(stemmer stem: 'eucharist').
-(stemmer stem: 'financiamentos').
+Object subclass: StemmerSTTests [
+  | stemmer |
+
+  setUp [
+    stemmer := StemmerST new.
+  ]
+
+  testRegionsForWord: word withR1: r1 withR2: r2 [
+    |rr1 rr2|
+    rr1 := stemmer getR1: word.
+    rr2 := stemmer getR2: word.
+    self expect: r1 toEqual: rr1.
+    self expect: r1 toEqual: rr2.
+  ]
+
+  testForWordRegions [
+    self testRegionsForWord: 'beautiful'      withR1: 'iful'        withR2: 'ul'.
+    self testRegionsForWord: 'beauty'         withR1: 'y'           withR2: ''.
+    self testRegionsForWord: 'beau'           withR1: ''            withR2: ''.
+    self testRegionsForWord: 'canibalization' withR1: 'ibalization' withR2: 'alization'.
+    self testRegionsForWord: 'animadversion'  withR1: 'imadversion' withR2: 'adversion'.
+    self testRegionsForWord: 'canibal'        withR1: 'ibal'        withR2: 'al'.
+    self testRegionsForWord: 'aninal'         withR1: 'inal'        withR2: 'al'.
+    self testRegionsForWord: 'sprinkled'      withR1: 'kled'        withR2: ''.
+    self testRegionsForWord: 'eucharist'      withR1: 'harist'      withR2: 'ist'.
+    self testRegionsForWord: 'doações'        withR1: 'o~es'        withR2: 'es'.
+    self testRegionsForWord: 'financiamentos' withR1: 'anciamentos' withR2: 'ciamentos'.
+  ]
+
+  testStemming [
+    "self expect (stemmer stem: 'financiamentos') toEqual: 'fianc'."
+  ]
+]
 
