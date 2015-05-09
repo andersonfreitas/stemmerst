@@ -45,14 +45,8 @@ Object subclass: StemmerST [
     r1 := self getR1: stemmed.
     r2 := self getR2: stemmed.
 
-    word printNl.
-    (' - r1 = ', r1) printNl.
-    (' - r2 = ', r2) printNl.
-
     " delete suffixes_1 if in R2"
     r2 ifNotNil: [(r2 =~ suffixes_1) ifMatched: [ :m | stemmed := stemmed replacingRegex: (m at: 1) with: '' ]].
-    ('== stemmed := ', stemmed) printNl.
-    (String with: Character cr) printNl.
     ^stemmed
   ]
 ]
