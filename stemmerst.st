@@ -4,15 +4,23 @@
 
 Object subclass: StemmerST [
 
-  stem: word [
-  
-    ((string =~ 'ee') ifMatched: ['match!'])
-
-    ^'teste'
+  normalizeNasalidedVowel: word [
+    |r| 
+    r := (word replacingRegex: 'ã' with: 'a~').
+    r := (word replacingRegex: 'õ' with: 'o~').
+    ^r
   ]
 
+  stem: word [
+    |w|
+    "((string =~ 'ee') ifMatched: ['match!'])"
+
+    w := (self normalizeNasalidedVowel: word).
+    ^w
+  ]
 ]
 
 stemmer := StemmerST new.
 (stemmer stem: 'doações') printNl.
+
 
