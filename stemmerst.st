@@ -15,8 +15,13 @@ Object subclass: StemmerST [
   "Region 1 (R1) is the region after the first non-vowel following a vowel, or is"
   "the null region at the end of the word if there is no such non-vowel"
   getR1: word [
-    |r1|
-    r1 := ((word =~ ('[', vowels, '][^', vowels, '](.*)')) ifMatched: [ :m | m at: 1]).
+    |r1 regex|
+    regex := '[', vowels, '][^', vowels, '](.*)'.
+    [r1 := ((word =~ regex) 
+      ifMatched: [ :match | match at: 1 ] 
+      ifNotMatched: [''])] 
+        on: SystemExceptions.IndexOutOfRange
+        do: [ :e | e return: '' ].
     ^r1
   ]
 
@@ -53,4 +58,8 @@ stemmer := StemmerST new.
 (stemmer stem: 'canibal').
 (stemmer stem: 'aninal').
 (stemmer stem: 'canibalization').
+(stemmer stem: 'beau').
+(stemmer stem: 'animadversion').
+(stemmer stem: 'sprinkled').
+(stemmer stem: 'eucharist').
 
