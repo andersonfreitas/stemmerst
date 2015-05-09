@@ -40,7 +40,7 @@ Object subclass: StemmerST [
     " Performs the stemming"
     <category: 'algorithmic'>
     |stemmed r1 r2|
-    stemmed := (self replaceNasalisedVowels: word).
+    stemmed := (self replaceNasalisedVowels: word) asLowercase.
 
     r1 := self getR1: stemmed.
     r2 := self getR2: stemmed.
