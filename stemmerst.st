@@ -3,6 +3,10 @@
 " Reference: http://snowball.tartarus.org/algorithms/portuguese/stemmer.html"
 
 Object subclass: StemmerST [
+  "Vowels:"
+    "aeiou"
+    "áéíóú"
+    "âê ô "
 
   normalizeNasalidedVowel: word [
     |r| 
