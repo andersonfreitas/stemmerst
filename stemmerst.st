@@ -16,16 +16,7 @@ Object subclass: StemmerST [
   "the null region at the end of the word if there is no such non-vowel"
   getR1: word [
     |r1|
-    "beaut|iful"
-    "beaut|y"
-    "an|imal"
-  
-    [[ r1 := word =~ ('[', vowels, '][^', vowels, '](.*)') at: 1 ]
-      on: SystemExceptions.IndexOutOfRange
-      do: [ :e | e return: nil ]]
-      on: SystemExceptions.ShouldNotImplement
-      do: [ :e | e return: nil].
-
+    r1 := ((word =~ ('[', vowels, '][^', vowels, '](.*)')) ifMatched: [ :m | m at: 1]).
     ^r1
   ]
 
@@ -50,8 +41,6 @@ Object subclass: StemmerST [
     word printNl.
     (' - r1 = ', r1) printNl.
     (' - r2 = ', r2) printNl.
-
-    "((string =~ 'ee') ifMatched: ['match!'])"
 
     ^w
   ]
