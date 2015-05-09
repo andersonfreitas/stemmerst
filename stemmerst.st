@@ -44,8 +44,8 @@ Object subclass: StemmerST [
     |w r1 r2|
     w := (self replaceNasalisedVowels: word).
 
-    r1 := self getR1: word.
-    r2 := self getR2: word.
+    r1 := self getR1: w.
+    r2 := self getR2: w.
 
     word printNl.
     (' - r1 = ', r1) printNl.
