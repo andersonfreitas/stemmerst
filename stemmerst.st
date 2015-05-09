@@ -84,8 +84,11 @@ TestCase subclass: StemmerTestCase [
   ]
 
   testStemming [
-    self assert: true
-    "self expect (stemmer stem: 'financiamentos') toEqual: 'fianc'."
+    self expect: (stemmer stem: 'financiamentos') toEqual: 'financi'.
+  ]
+
+  expect: a toEqual: b [
+    self assert: a = b description: 'Expected <', a, '> to equal <', b, '>'.
   ]
 ]
 
