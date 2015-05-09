@@ -8,7 +8,7 @@ Object subclass: StemmerST [
     "áéíóú"
     "âê ô "
 
-  normalizeNasalidedVowel: word [
+  replaceNasalisedVowels: word [
     |r| 
     r := (word replacingRegex: 'ã' with: 'a~').
     r := (word replacingRegex: 'õ' with: 'o~').
@@ -19,7 +19,7 @@ Object subclass: StemmerST [
     |w|
     "((string =~ 'ee') ifMatched: ['match!'])"
 
-    w := (self normalizeNasalidedVowel: word).
+    w := (self replaceNasalisedVowels: word).
     ^w
   ]
 ]
