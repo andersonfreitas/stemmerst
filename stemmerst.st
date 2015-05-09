@@ -23,7 +23,7 @@ Object subclass: StemmerST [
       ifMatched: [ :match | match at: 1 ] 
       ifNotMatched: [''])] 
         on: SystemExceptions.IndexOutOfRange
-        do: [ :e | e return: '' ].
+        do: [ r1 := '' ].
     ^r1
   ]
 
@@ -51,37 +51,44 @@ Object subclass: StemmerST [
   ]
 ]
 
-Object subclass: StemmerSTTests [
+PackageLoader fileInPackage: 'SUnit'!
+
+TestCase subclass: StemmerTestCase [
   | stemmer |
 
   setUp [
     stemmer := StemmerST new.
   ]
 
-  testRegionsForWord: word withR1: r1 withR2: r2 [
-    |rr1 rr2|
-    rr1 := stemmer getR1: word.
-    rr2 := stemmer getR2: word.
-    self expect: r1 toEqual: rr1.
-    self expect: r1 toEqual: rr2.
+  checkRegionsForWord: word withR1: r1 withR2: r2 [
+    |rr1 rr2 stemmed|
+    stemmed := (stemmer replaceNasalisedVowels: word) asLowercase.
+    rr1 := stemmer getR1: stemmed.
+    rr2 := stemmer getR2: stemmed.
+    self assert: (r1 = rr1) description: 'Test for word ', word, ' in R1 failed. Expected ', r1, ' got ', rr1.
+    self assert: (r2 = rr2) description: 'Test for word ', word, ' in R2 failed. Expected ', r2, ' got ', rr2.
   ]
 
   testForWordRegions [
-    self testRegionsForWord: 'beautiful'      withR1: 'iful'        withR2: 'ul'.
-    self testRegionsForWord: 'beauty'         withR1: 'y'           withR2: ''.
-    self testRegionsForWord: 'beau'           withR1: ''            withR2: ''.
-    self testRegionsForWord: 'canibalization' withR1: 'ibalization' withR2: 'alization'.
-    self testRegionsForWord: 'animadversion'  withR1: 'imadversion' withR2: 'adversion'.
-    self testRegionsForWord: 'canibal'        withR1: 'ibal'        withR2: 'al'.
-    self testRegionsForWord: 'aninal'         withR1: 'inal'        withR2: 'al'.
-    self testRegionsForWord: 'sprinkled'      withR1: 'kled'        withR2: ''.
-    self testRegionsForWord: 'eucharist'      withR1: 'harist'      withR2: 'ist'.
-    self testRegionsForWord: 'doações'        withR1: 'o~es'        withR2: 'es'.
-    self testRegionsForWord: 'financiamentos' withR1: 'anciamentos' withR2: 'ciamentos'.
+    self checkRegionsForWord: 'beautiful'      withR1: 'iful'        withR2: 'ul'.
+    self checkRegionsForWord: 'beauty'         withR1: 'y'           withR2: ''.
+    self checkRegionsForWord: 'beau'           withR1: ''            withR2: ''.
+    self checkRegionsForWord: 'canibalization' withR1: 'ibalization' withR2: 'alization'.
+    self checkRegionsForWord: 'animadversion'  withR1: 'imadversion' withR2: 'adversion'.
+    self checkRegionsForWord: 'canibal'        withR1: 'ibal'        withR2: 'al'.
+    self checkRegionsForWord: 'aninal'         withR1: 'inal'        withR2: 'al'.
+    self checkRegionsForWord: 'sprinkled'      withR1: 'kled'        withR2: ''.
+    self checkRegionsForWord: 'eucharist'      withR1: 'harist'      withR2: 'ist'.
+    self checkRegionsForWord: 'doações'        withR1: 'o~es'        withR2: 'es'.
+    self checkRegionsForWord: 'financiamentos' withR1: 'anciamentos' withR2: 'ciamentos'.
   ]
 
   testStemming [
+    self assert: true
     "self expect (stemmer stem: 'financiamentos') toEqual: 'fianc'."
   ]
 ]
+
+StemmerTestCase buildSuiteFromLocalSelectors run printNl!
+"(StemmerTestCase new) setUp; testForWordRegions; tearDown!"
 
