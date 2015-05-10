@@ -5,7 +5,23 @@
 Object subclass: StemmerST [
   vowels := 'aeiouáéíóúâêô'.
 
-  suffixes_1 := '(eza|ezas|ico|ica|icos|icas|ismo|ismos|ável|ível|ista|istas|oso|osa|osos|osas|amento|amentos|imento|imentos|adora|ador|aça~o|adoras|adores|aço~es|ante|antes|ância)$'.
+  suffixes_1 := '(eza|ezas|ico|ica|icos|icas|ismo|ismos|ável|ível',
+                '|ista|istas|oso|osa|osos|osas|amento|amentos|imento',
+                '|imentos|adora|ador|aça~o|adoras|adores|aço~es|ante',
+                '|antes|ância)$'.
+  suffixes_2 := '(ada|ida|ia|aria|eria|iria|ará|ara|erá|era|irá|ava',
+                '|asse|esse|isse|aste|este|iste|ei|arei|erei|irei|am',
+                '|iam|ariam|eriam|iriam|aram|eram|iram|avam|em|arem',
+                '|erem|irem|assem|essem|issem|ado|ido|ando|endo|indo',
+                '|ara~o|era~o|ira~o|ar|er|ir|as|adas|idas|ias|arias',
+                '|erias|irias|arás|aras|erás|eras|irás|avas|es|ardes',
+                '|erdes|irdes|ares|eres|ires|asses|esses|isses|astes',
+                '|estes|istes|is|ais|eis|íeis|aríeis|eríeis|iríeis',
+                '|áreis|areis|éreis|ereis|íreis|ireis|ásseis|ésseis',
+                '|ísseis|áveis|ados|idos|ámos|amos|íamos|aríamos',
+                '|eríamos|iríamos|áramos|éramos|íramos|ávamos|emos',
+                '|aremos|eremos|iremos|ássemos|êssemos|íssemos|imos',
+                '|armos|ermos|irmos|eu|iu|ou|ira|iras)$'.
   
   replaceNasalisedVowels: word [
     |r| 
@@ -97,6 +113,10 @@ Object subclass: StemmerST [
 
     " replace with ir if in RV and preceded by e"
     rv ifNotNil: [(rv =~ 'e*(ira[s]*)') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: 'ir' ]].
+
+    " Step 2: Verb suffixes"
+    rv ifNotNil: [(rv =~ suffixes_2) ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+    
   ]
 ]
 
