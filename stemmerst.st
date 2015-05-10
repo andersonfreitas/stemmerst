@@ -159,7 +159,7 @@ TestCase subclass: StemmerTestCase [
     self expect: (stemmer stem: 'respectivamente') toEqual: 'respectiv'.
     self expect: (stemmer stem: 'exatamente')      toEqual: 'exat'.
     self expect: (stemmer stem: 'lamentávelmente') toEqual: 'lamentável'.
-    self expect: (stemmer stem: 'fiandeiras') toEqual: 'lamentável'.
+    self expect: (stemmer stem: 'fiandeiras')      toEqual: 'fiandeir'.
   ]
 
   testRV [
@@ -167,7 +167,7 @@ TestCase subclass: StemmerTestCase [
     self expect: (stemmer getRV: 'oliva')       toEqual: 'va'.
     self expect: (stemmer getRV: 'trabalho')    toEqual: 'balho'.
     self expect: (stemmer getRV: 'aureo')       toEqual: 'eo'.
-    self expect: (stemmer getRV: 'fiandeiras')  toEqual: 'fiandeir'.
+    self expect: (stemmer getRV: 'fiandeiras')  toEqual: 'ndeiras'.
 
     " TODO: O Smalltalk não está reconhecendo os caracteres acentuados."
     "self expect: (stemmer getRV: 'áureo')      toEqual: 'eo'." 
@@ -180,4 +180,5 @@ TestCase subclass: StemmerTestCase [
 
 StemmerTestCase buildSuiteFromLocalSelectors run printNl!
 "(StemmerTestCase new) setUp; testForWordRegions; tearDown!"
+"(StemmerTestCase new) setUp; testRV; tearDown!"
 
