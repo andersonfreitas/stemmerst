@@ -133,7 +133,24 @@ TestCase subclass: StemmerTestCase [
   ]
 
   testStemming [
-    self expect: (stemmer stem: 'financiamentos') toEqual: 'financi'.
+    self expect: (stemmer stem: 'financiamentos')  toEqual: 'financi'.
+    self expect: (stemmer stem: 'parapsicologia')  toEqual: 'parapsicolog'.
+    self expect: (stemmer stem: 'carinhosamente')  toEqual: 'carinhos'.
+    self expect: (stemmer stem: 'respectivamente') toEqual: 'respectiv'.
+    self expect: (stemmer stem: 'exatamente')      toEqual: 'exat'.
+    self expect: (stemmer stem: 'lamentávelmente') toEqual: 'lamentável'.
+    self expect: (stemmer stem: 'fiandeiras') toEqual: 'lamentável'.
+  ]
+
+  testRV [
+    self expect: (stemmer getRV: 'macho')       toEqual: 'ho'.
+    self expect: (stemmer getRV: 'oliva')       toEqual: 'va'.
+    self expect: (stemmer getRV: 'trabalho')    toEqual: 'balho'.
+    self expect: (stemmer getRV: 'aureo')       toEqual: 'eo'.
+    self expect: (stemmer getRV: 'fiandeiras')  toEqual: 'fiandeir'.
+
+    " TODO: O Smalltalk não está reconhecendo os caracteres acentuados."
+    "self expect: (stemmer getRV: 'áureo')      toEqual: 'eo'." 
   ]
 
   expect: a toEqual: b [
