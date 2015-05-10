@@ -62,15 +62,41 @@ Object subclass: StemmerST [
   stem: word [
     " Performs the stemming"
     <category: 'algorithmic'>
-    |stemmed r1 r2|
+    |stemmed r1 r2 rv|
     stemmed := (self replaceNasalisedVowels: word) asLowercase.
 
     r1 := self getR1: stemmed.
     r2 := self getR2: stemmed.
+    rv := self getRV: stemmed.
 
     " delete suffixes_1 if in R2"
-    r2 ifNotNil: [(r2 =~ suffixes_1) ifMatched: [ :m | stemmed := stemmed replacingRegex: (m at: 1) with: '' ]].
-    ^stemmed
+    r2 ifNotNil: [(r2 =~ suffixes_1) ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+
+    " replace logia, logias with log if in R2"
+    r2 ifNotNil: [(r2 =~ '(logia|logias)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: 'log' ]].
+
+    " replace ución, uciones with u if in R2"
+    r2 ifNotNil: [(r2 =~ '(ución|uciones)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: 'u' ]].
+
+    " replace ência, ências with ente if in R2"
+    r2 ifNotNil: [(r2 =~ '(ência|ências)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: 'ente' ]].
+
+    " delete amente if in R1"
+    r1 ifNotNil: [(r1 =~ '(amente)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+    r2 ifNotNil: [(r2 =~ 'iv(amente)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+    r2 ifNotNil: [(r2 =~ '[at]*(amente)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+    r2 ifNotNil: [(r2 =~ '[os|ic|ad](amente)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+  
+    " delete mente if in R2"
+    r2 ifNotNil: [(r2 =~ '[ante|avel|ível|](mente)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+
+    " idade, idades"
+    r2 ifNotNil: [(r2 =~ '[abil|ic|iv|](idade[s]*)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+
+    r2 ifNotNil: [(r2 =~ '[at]*([iva|ivo][s]*)$') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: '' ]].
+
+    " replace with ir if in RV and preceded by e"
+    rv ifNotNil: [(rv =~ 'e*(ira[s]*)') ifMatched: [ :m | ^ stemmed replacingRegex: (m at: 1) with: 'ir' ]].
   ]
 ]
 
