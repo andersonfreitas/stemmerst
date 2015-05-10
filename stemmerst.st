@@ -36,6 +36,29 @@ Object subclass: StemmerST [
     ^r2
   ]
 
+  "If the second letter is a consonant, RV is the region after the next following
+  vowel, or if the first two letters are vowels, RV is the region after the next 
+  consonant, and otherwise (consonant-vowel case) RV is the region after the third 
+  letter. But RV is the end of the word if these positions cannot be found."
+  getRV: word [
+    |regex_a regex_b regex_c|
+
+    " If the second letter is a consonant, RV is the region after the next following vowel"
+    regex_a := '^[a-z][^', vowels, ']+[', vowels, '](.*)'.
+    (word =~ regex_a) ifMatched: [ :match | ^match at: 1 ].
+
+    " If the first two letters are vowels, RV is the region after the next consonant"
+    regex_b := '^[', vowels, ']{2}[^', vowels, '](.*)'.
+    (word =~ regex_b) ifMatched: [ :match | ^ match at: 1 ].
+  
+    " Consonant-vowel case RV is the region after the 3rd letter"
+    regex_c := '^[^', vowels, '][', vowels, '].(.*)$'.
+    (word =~ regex_c) ifMatched: [ :match | ^ match at: 1 ].
+
+    " But RV is the end of the word if these positions cannot be found"
+    " ??? "
+  ]
+
   stem: word [
     " Performs the stemming"
     <category: 'algorithmic'>
