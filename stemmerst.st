@@ -9,6 +9,7 @@ Object subclass: StemmerST [
                 '|ista|istas|oso|osa|osos|osas|amento|amentos|imento',
                 '|imentos|adora|ador|aça~o|adoras|adores|aço~es|ante',
                 '|antes|ância)$'.
+
   suffixes_2 := '(ada|ida|ia|aria|eria|iria|ará|ara|erá|era|irá|ava',
                 '|asse|esse|isse|aste|este|iste|ei|arei|erei|irei|am',
                 '|iam|ariam|eriam|iriam|aram|eram|iram|avam|em|arem',
@@ -80,6 +81,7 @@ Object subclass: StemmerST [
 
     " But RV is the end of the word if these positions cannot be found"
     " ??? "
+    ^''
   ]
 
   doStep1: stemmed r1: r1 r2: r2 rv: rv [
@@ -109,9 +111,11 @@ Object subclass: StemmerST [
 
     r2 ifNotNil: [(r2 =~ '[at]*([iva|ivo][s]*)$') ifMatched: [ :m | ^ stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
 
-
     " replace with ir if in RV and preceded by e"
     rv ifNotNil: [(rv =~ 'e.*(ira[s]*)$') ifMatched: [ :m | ^ stemmed replacingRegex: ((m at: 1), '$') with: 'ir' ]].
+
+    ^stemmed.
+  ]
   ]
 
   stem: word [
