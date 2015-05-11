@@ -53,16 +53,17 @@ TestCase subclass: StemmerTestCase [
   ]
 
   testFullVocab [
-    |file lines diffs|
-
+    |file lines diffs i|
+    i := 0.
     file := (File name: 'diffs.txt') readStream.
     diffs := file lines collect: [ :line | line subStrings ].
     diffs do: [ :term |
       |a b|
       a := stemmer stem: term first.
       b := term second.
+      i := i + 1.
       self assert: a = b
-           description: 'Term: ', term first, '. Expected <', a, '> to equal <', b, '>'
+           description: '(', i asString,') Term: ', term first, '. Expected <', a, '> to equal <', b, '>'
            resumable: true.
     ].
   ]
