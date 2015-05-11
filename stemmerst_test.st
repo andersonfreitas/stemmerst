@@ -52,12 +52,27 @@ TestCase subclass: StemmerTestCase [
     "self expect: (stemmer getRV: 'áureo')      toEqual: 'eo'." 
   ]
 
+  testFullVocab [
+    |file lines diffs|
+
+    file := (File name: 'diffs.txt') readStream.
+    diffs := file lines collect: [ :line | line subStrings ].
+    diffs do: [ :term |
+      |a b|
+      a := stemmer stem: term first.
+      b := term second.
+      self assert: a = b
+           description: 'Term: ', term first, '. Expected <', a, '> to equal <', b, '>'
+           resumable: true.
+    ].
+  ]
+
   expect: a toEqual: b [
     self assert: a = b description: 'Expected <', a, '> to equal <', b, '>'.
   ]
 ]
 
 StemmerTestCase buildSuiteFromLocalSelectors run printNl!
-"(StemmerTestCase new) setUp; testForWordRegions; tearDown!"
+"(StemmerTestCase new) setUp; testFullVocab; tearDown!"
 "(StemmerTestCase new) setUp; testRV; tearDown!"
 
