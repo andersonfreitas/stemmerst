@@ -55,7 +55,7 @@ TestCase subclass: StemmerTestCase [
   testFullVocab [
     |file lines diffs i|
     i := 0.
-    file := (File name: 'diffs.txt') readStream.
+    file := (File name: 'fixtures/diffs.txt') readStream.
     diffs := file lines collect: [ :line | line subStrings ].
     diffs do: [ :term |
       |a b|
