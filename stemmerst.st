@@ -68,13 +68,13 @@ Object subclass: StemmerST [
     |regex_a regex_b regex_c|
 
     " If the second letter is a consonant, RV is the region after the next following vowel"
-    regex_a := '^[a-z][^', vowels, ']+[', vowels, '](.*)'.
-    (word =~ regex_a) ifMatched: [ :match | ^match at: 1 ].
+    regex_a := '^([a-z][^', vowels, ']+[', vowels, '])'.
+    (word =~ regex_a) ifMatched: [ :match | ^ (word replacingRegex: ('^', (match at: 0)) with: '') ].
 
     " If the first two letters are vowels, RV is the region after the next consonant"
-    regex_b := '^[', vowels, ']{2}[^', vowels, '](.*)'.
-    (word =~ regex_b) ifMatched: [ :match | ^ match at: 1 ].
-  
+    regex_b := '^([', vowels, ']{2}[^', vowels, '])(.*)'.
+    (word =~ regex_b) ifMatched: [ :match | ^ (word replacingRegex: ('^', (match at: 1)) with: '') ].
+
     " Consonant-vowel case RV is the region after the 3rd letter"
     regex_c := '^[^', vowels, '][', vowels, '].(.*)$'.
     (word =~ regex_c) ifMatched: [ :match | ^ match at: 1 ].
