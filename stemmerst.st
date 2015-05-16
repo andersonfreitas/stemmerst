@@ -140,15 +140,6 @@ Object subclass: StemmerST [
     ^ret.
   ]
 
-  replaceIfFound: word target: target regex: regex with: with [
-    |ret|
-    ret := ''.
-    (target =~ regex)
-      ifMatched:
-        [ :m | ret := self replacingRegex: ((m at: 1), '$') in: word with: with ].
-    ^ret.
-  ]
-
   stem: word [
     " Performs the stemming"
     <category: 'algorithmic'>
