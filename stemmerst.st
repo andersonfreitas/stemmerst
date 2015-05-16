@@ -24,19 +24,30 @@ Object subclass: StemmerST [
                 '|aremos|eremos|iremos|ássemos|êssemos|íssemos|imos',
                 '|armos|ermos|irmos|eu|iu|ou|ira|iras)$'.
 
+
+  replacingRegex: pattern in: aTarget with: aString [
+    ^aTarget replacingRegex: pattern with: aString.
+  ]
+
+  "replacingRegex: pattern in: target with: aString [
+    |matcher|
+  	matcher := RxMatcher forString: pattern.
+  	^matcher copy: target replacingMatchesWith: aString.
+  ]"
+
   replaceNasalisedVowels: word [
     |r|
     r := word.
-    r := (r replacingRegex: 'ã' with: 'a~').
-    r := (r replacingRegex: 'õ' with: 'o~').
+    r := (self replacingRegex: 'ã' in: r with: 'a~').
+    r := (self replacingRegex: 'õ' in: r with: 'o~').
     ^r
   ]
 
   returnNasalisedVowels: word [
     |r|
     r := word.
-    r := (r replacingRegex: 'a~' with: 'ã').
-    r := (r replacingRegex: 'o~' with: 'õ').
+    r := (self replacingRegex: 'a~' in: r with: 'ã').
+    r := (self replacingRegex: 'o~' in: r with: 'õ').
     ^r
   ]
 
@@ -95,34 +106,33 @@ Object subclass: StemmerST [
     rv := rrv.
 
     " delete suffixes_1 if in R2"
-    r2 ifNotNil: [(r2 =~ suffixes_1) ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+    r2 ifNotNil: [(r2 =~ suffixes_1) ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
 
     " replace logia, logias with log if in R2"
-    r2 ifNotNil: [(r2 =~ '(logia|logias)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: 'log' ]].
+    r2 ifNotNil: [(r2 =~ '(logia|logias)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: 'log' ]].
 
     " replace ución, uciones with u if in R2"
-    r2 ifNotNil: [(r2 =~ '(ución|uciones)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: 'u' ]].
+    r2 ifNotNil: [(r2 =~ '(ución|uciones)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: 'u' ]].
 
     " replace ência, ências with ente if in R2"
-    r2 ifNotNil: [(r2 =~ '(ência|ências)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: 'ente' ]].
+    r2 ifNotNil: [(r2 =~ '(ência|ências)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: 'ente' ]].
 
     " delete amente if in R1"
-    r1 ifNotNil: [(r1 =~ '(amente)$') ifMatched: [ :m | ^ stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
-    r2 ifNotNil: [(r2 =~ '(iv).*(amente)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 2), '$') with: '' ]].
-    r2 ifNotNil: [(r2 =~ '(at).*(amente)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 2), '$') with: '' ]].
-    r2 ifNotNil: [(r2 =~ '(os|ic|ad)(amente)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 2), '$') with: '' ]].
+    r1 ifNotNil: [(r1 =~ '(amente)$') ifMatched: [ :m | ^ self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
+    r2 ifNotNil: [(r2 =~ '(iv).*(amente)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 2), '$') in: stemmed with: '' ]].
+    r2 ifNotNil: [(r2 =~ '(at).*(amente)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 2), '$') in: stemmed with: '' ]].
+    r2 ifNotNil: [(r2 =~ '(os|ic|ad)(amente)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 2), '$') in: stemmed with: '' ]].
 
     " delete mente if in R2"
-    "r2 ifNotNil: [(r2 =~ '(ante|avel|ível|)(mente)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: '' ]]."
-    r2 ifNotNil: [(r2 =~ '(mente)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+    r2 ifNotNil: [(r2 =~ '(mente)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
 
     " idade, idades"
-    r2 ifNotNil: [(r2 =~ '(abil|ic|iv|)(idade[s]*)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 2), '$') with: '' ]].
+    r2 ifNotNil: [(r2 =~ '(abil|ic|iv|)(idade[s]*)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 2), '$') in: stemmed with: '' ]].
 
-    r2 ifNotNil: [(r2 =~ '(iva|ivo|ivas|ivos)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+    r2 ifNotNil: [(r2 =~ '(iva|ivo|ivas|ivos)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
 
     " replace with ir if in RV and preceded by e"
-    rv ifNotNil: [(rv =~ 'e.*(ira[s]*)$') ifMatched: [ :m | ret := stemmed replacingRegex: ((m at: 1), '$') with: 'ir' ]].
+    rv ifNotNil: [(rv =~ 'e.*(ira[s]*)$') ifMatched: [ :m | ret := self replacingRegex: ((m at: 1), '$') in: stemmed with: 'ir' ]].
 
     ^ret.
   ]
@@ -132,7 +142,7 @@ Object subclass: StemmerST [
     ret := ''.
     (target =~ regex)
       ifMatched:
-        [ :m | ret := word replacingRegex: ((m at: 1), '$') with: with ].
+        [ :m | ret := self replacingRegex: ((m at: 1), '$') in: word with: with ].
     ^ret.
   ]
 
@@ -159,7 +169,7 @@ Object subclass: StemmerST [
 
     s1 ifFalse: [
       " Step 2: Verb suffixes"
-      rv ifNotNil: [(rv =~ suffixes_2) ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+      rv ifNotNil: [(rv =~ suffixes_2) ifMatched: [ :m | stemmed := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
       r1 := self getR1: stemmed.
       r2 := self getR2: stemmed.
       rv := self getRV: stemmed.
@@ -168,7 +178,7 @@ Object subclass: StemmerST [
 
     (s1 | s2) ifTrue: [
       " Step 3: Delete suffix i if in RV and preceded by c"
-      rv ifNotNil: [(rv =~ 'c(i)$') ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+      rv ifNotNil: [(rv =~ 'c(i)$') ifMatched: [ :m | stemmed := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
       r1 := self getR1: stemmed.
       r2 := self getR2: stemmed.
       rv := self getRV: stemmed.
@@ -177,23 +187,21 @@ Object subclass: StemmerST [
 
     (s1 not & s2 not) ifTrue: [
       " Step 4: Residual suffix (only if S1 and S2 did not change)"
-      rv ifNotNil: [(rv =~ '(os|a|i|o|á|í|ó)$') ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
+      rv ifNotNil: [(rv =~ '(os|a|i|o|á|í|ó)$') ifMatched: [ :m | stemmed := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
       r1 := self getR1: stemmed.
       r2 := self getR2: stemmed.
       rv := self getRV: stemmed.
     ].
 
     " Always do Step 5: "
-    rv ifNotNil: [(rv =~ '(e|é|ê)$') ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 1), '$') with: '' ]].
-    "rv ifNotNil: [(rv =~ '(gu|ci)(u|i)$') ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 2), '$') with: '' ]]."
-    "rv ifNotNil: [(rv =~ '(gu)$') ifMatched: [ :m | stemmed := stemmed replacingRegex: 'u$' with: '' ]]."
+    rv ifNotNil: [(rv =~ '(e|é|ê)$') ifMatched: [ :m | stemmed := self replacingRegex: ((m at: 1), '$') in: stemmed with: '' ]].
     (stemmed =~ '(gu)$') ifMatched: [ :m |
       (rv =~ '(u)$') ifMatched: [ :m2 |
-        stemmed := stemmed replacingRegex: ((m2 at: 1), '$') with: ''
+        stemmed := self replacingRegex: ((m2 at: 1), '$') in: stemmed with: ''
       ]
     ].
 
-    rv ifNotNil: [(rv =~ '(ç)$') ifMatched: [ :m | stemmed := stemmed replacingRegex: ((m at: 1), '$') with: 'c' ]].
+    rv ifNotNil: [(rv =~ '(ç)$') ifMatched: [ :m | stemmed := self replacingRegex: ((m at: 1), '$') in: stemmed with: 'c' ]].
 
     stemmed := self returnNasalisedVowels: stemmed.
     ^stemmed
