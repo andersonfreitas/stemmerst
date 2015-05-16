@@ -51,6 +51,13 @@ Object subclass: StemmerST [
     ^r
   ]
 
+  getR1: word [
+    |r1 regex|
+    regex := RxMatcher forString: '[', Vowels, '][^', Vowels, '](.*)'.
+    r1 := (regex search: word) ifTrue: [ regex subexpression: 1 ] ifFalse: [''].
+    ^r1.
+  ]
+
   "Region 1 (R1) is the region after the first non-vowel following a vowel, or is"
   "the null region at the end of the word if there is no such non-vowel"
   getR1: word [
@@ -78,23 +85,19 @@ Object subclass: StemmerST [
   consonant, and otherwise (consonant-vowel case) RV is the region after the third
   letter. But RV is the end of the word if these positions cannot be found."
   getRV: word [
-    |regex_a regex_b regex_c|
+    |regexA regexB regexC|
 
     " If the second letter is a consonant, RV is the region after the next following vowel"
-    "regex_a := '(^[a-z', vowels, '][^', vowels, ']+[', vowels, '])'."
-    regex_a := '(^[a-záé][^aeiou]+[aeiou])'.
-    (word =~ regex_a) ifMatched: [ :match | ^ (word replacingRegex: ('^', (match at: 0)) with: '') ].
+    regexA := RxMatcher forString: '(^[a-z', Vowels, '][^', Vowels, ']+[', Vowels, '])'.
+    (regexA search: word) ifTrue: [ ^ self replacingRegex: ('^', (regexA subexpression: 1)) in: word with: '' ].
 
-    " If the first two letters are vowels, RV is the region after the next consonant"
-    regex_b := '^([', vowels, ']{2}[^', vowels, '])(.*)'.
-    (word =~ regex_b) ifMatched: [ :match | ^ (word replacingRegex: ('^', (match at: 1)) with: '') ].
+    " If the first two letters are Vowels, RV is the region after the next consonant"
+    regexB := RxMatcher forString: '^([', Vowels, ']{2}[^', Vowels, '])(.*)'.
+    (regexB search: word) ifTrue: [ ^ self replacingRegex: ('^', (regexB subexpression: 1)) in: word with: '' ].
 
     " Consonant-vowel case RV is the region after the 3rd letter"
-    regex_c := '^[^', vowels, '][', vowels, '].(.*)$'.
-    (word =~ regex_c) ifMatched: [ :match | ^ match at: 1 ].
-
-    " But RV is the end of the word if these positions cannot be found"
-    " ??? "
+    regexC := RxMatcher forString: '^[^', Vowels, '][', Vowels, '].(.*)$'.
+    (regexC search: word) ifTrue: [ ^ regexC subexpression: 1 ].
     ^''
   ]
 
