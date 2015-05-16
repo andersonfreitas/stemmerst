@@ -32,8 +32,8 @@ TestCase subclass: StemmerTestCase [
   ]
 
   testStemming [
-    self expect: (stemmer stem: 'financiamentos')  toEqual: 'financi'.
-    self expect: (stemmer stem: 'parapsicologia')  toEqual: 'parapsicolog'.
+    self expect: (stemmer stem: 'financiamentos')  toEqual: 'financ'.
+    self expect: (stemmer stem: 'neuropsicologia') toEqual: 'neuropsicolog'.
     self expect: (stemmer stem: 'carinhosamente')  toEqual: 'carinhos'.
     self expect: (stemmer stem: 'respectivamente') toEqual: 'respectiv'.
     self expect: (stemmer stem: 'exatamente')      toEqual: 'exat'.
@@ -47,12 +47,13 @@ TestCase subclass: StemmerTestCase [
     self expect: (stemmer getRV: 'trabalho')    toEqual: 'balho'.
     self expect: (stemmer getRV: 'aureo')       toEqual: 'eo'.
     self expect: (stemmer getRV: 'fiandeiras')  toEqual: 'ndeiras'.
+    self expect: (stemmer getRV: 'acidas')      toEqual: 'das'.
 
     " TODO: O Smalltalk não está reconhecendo os caracteres acentuados."
-    "self expect: (stemmer getRV: 'áureo')      toEqual: 'eo'." 
+    "self expect: (stemmer getRV: 'áureo')      toEqual: 'eo'."
   ]
 
-  testFullVocab [
+  ignoretestFullVocab [
     |file lines diffs i|
     i := 0.
     file := (File name: 'fixtures/diffs.txt') readStream.
@@ -64,7 +65,7 @@ TestCase subclass: StemmerTestCase [
       i := i + 1.
       self assert: a = b
            description: '(', i asString,') Term: ', term first, '. Expected <', a, '> to equal <', b, '>'
-           resumable: true.
+           resumable: false.
     ].
   ]
 
@@ -76,4 +77,3 @@ TestCase subclass: StemmerTestCase [
 StemmerTestCase buildSuiteFromLocalSelectors run printNl!
 "(StemmerTestCase new) setUp; testFullVocab; tearDown!"
 "(StemmerTestCase new) setUp; testRV; tearDown!"
-
